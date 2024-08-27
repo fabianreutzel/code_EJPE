@@ -805,7 +805,7 @@ gl c_i_controls_cons_xtile $i_controls cons_xtile mob_exp $c_controls
 
 *adjust democracy variable	
 local d vd_democracy
-gl d "i.`d'"
+gl d "c.`d'"
 
 *run regressions (1.lasso for selection 2.simple probit using selected cofficents to store regression results)
 eststo l_I: 	lasso probit supdem I_gini_f $d $c_i_controls_cons_xtile, postsel rseed(123)
@@ -822,14 +822,14 @@ eststo l_I_UIi: lasso probit supdem UI_gini_f I_gini_f $d#c.UI_gini_f $d#c.I_gin
 eststo I_UIi: 	probit supdem `e(allvars_sel)', vce(cluster cname) 
 eststo l_IR_UI: lasso probit supdem UI_gini_f IR_gini_f $d $c_i_controls_cons_xtile, postsel rseed(123) 
 eststo IR_UI: 	probit supdem `e(allvars_sel)', vce(cluster cname)
-eststo l_IR_UIi:lasso probit supdem UI_gini_f IR_gini_f $d#c.UI_gini_f $d#c.I_gini_f $d#c.cons_xtile $d#c.mob_exp $d $c_i_controls_cons_xtile, postsel rseed(123) 
+eststo l_IR_UIi:lasso probit supdem UI_gini_f IR_gini_f $d#c.UI_gini_f $d#c.IR_gini_f $d#c.cons_xtile $d#c.mob_exp $d $c_i_controls_cons_xtile, postsel rseed(123) 
 eststo IR_UIi: 	probit supdem `e(allvars_sel)', vce(cluster cname) 	
 
 *adjust output 
 noi esttab I Ii UI UIi I_UI I_UIi IR_UI IR_UIi using "$tables/tab_`d'_lasso.tex", replace ///
 eqlabels(none) nodepvars nonotes nomtitles noomitted nogaps booktabs label b(3) se(3) star(* .1 ** .05 *** .01) ///
 collabels(none) ///
-order(I_gini_f 1.`d'#c.I_gini_f UI_gini_f 1.`d'#c.UI_gini_f IR_gini_f 1.`d'#c.IR_gini_f cons_xtile 1.`d'#c.cons_xtile mob_exp 1.`d'#c.mob_exp 1.`d') ///
+order(I_gini_f $d#c.I_gini_f UI_gini_f $d#c.UI_gini_f IR_gini_f $d#c.IR_gini_f cons_xtile $d#c.cons_xtile mob_exp $d#c.mob_exp) ///
 stats(N N_clust r2_p , fmt(0 0 3) ///
 labels("Number of individuals" "Number of countries" "pseudo \$R^2$"))
 
